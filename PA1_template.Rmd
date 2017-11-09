@@ -29,7 +29,8 @@ average[which.max(average$steps),]
 ```
 
 ## Imputing missing values
-
-
+```{r}
+missing <- is.na(activity$steps)
+```
 
 ## Are there differences in activity patterns between weekdays and weekends?
