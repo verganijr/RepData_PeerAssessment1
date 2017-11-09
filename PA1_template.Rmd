@@ -8,18 +8,24 @@ output:
 
 ## Loading and preprocessing the data
 ```{r}
+setwd("c:/Data Science/RepData")
 activity <- read.csv(activity.csv)
+numbersteps <- aggregate(steps~date,data=activity,sum,na.rm=TRUE)
 ```
 
 ## What is mean total number of steps taken per day?
 ```{r}
-plot(activity)
+barplot(numbersteps$steps, names.arg = numbersteps$date)
+mean(numbersteps$steps)
+median(numbersteps$steps)
 ```
 
-
 ## What is the average daily activity pattern?
-
-
+```{r}
+library(ggplot2)
+average <- aggregate(x=list(steps=activity$steps), by=list(interval=activity$interval), FUN=mean, na.rm=TRUE)
+ggplot(data=average, aes(x=interval, y=steps)) + geom_line() + xlab("5-minute interval") + ylab("average number of steps taken")
+```
 
 ## Imputing missing values
 
