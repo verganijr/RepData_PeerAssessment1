@@ -31,6 +31,11 @@ average[which.max(average$steps),]
 ## Imputing missing values
 ```{r}
 missing <- is.na(activity$steps)
+sum(missing)
+activity_fill <- activity
+activity_fill$steps[which(is.na(activity_fill$steps))] <- tapply(activity_fill$steps, activity_fill$interval, mean, na.rm=T, simplify=F )
+activity_fill$steps <- as.vector(activity_fill$steps, mode="numeric")
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
