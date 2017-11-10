@@ -35,6 +35,11 @@ sum(missing)
 activity_fill <- activity
 activity_fill$steps[which(is.na(activity_fill$steps))] <- tapply(activity_fill$steps, activity_fill$interval, mean, na.rm=T, simplify=F )
 activity_fill$steps <- as.vector(activity_fill$steps, mode="numeric")
+library("dplyr")
+daily_activity_fill <- activity_fill %>% group_by(date) %>% summarise( numbersteps = sum(steps, na.rm=T))
+library("ggplot2")
+plot3 <- ggplot(daily_activity_fill, aes(date, numbersteps)) + geom_histogram(stat="identity")+ theme(axis.text.x= element_text(size=6, angle=90, vjust=1))
+print(plot3)
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?
