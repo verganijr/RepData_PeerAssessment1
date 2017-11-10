@@ -7,24 +7,38 @@ output:
 
 
 ## Loading and preprocessing the data
+
+#### 1 - Load the data (i.e. read.csv())
 ```{r}
 setwd("c:/Data Science/RepData")
 activity <- read.csv(activity.csv)
+```
+#### 2 - Process/transform the data (if necessary) into a format suitable for your analysis
+```{r}
 numbersteps <- aggregate(steps~date,data=activity,sum,na.rm=TRUE)
 ```
 
 ## What is mean total number of steps taken per day?
+
+#### 1 - Make a histogram of the total number of steps taken each day
 ```{r}
 barplot(numbersteps$steps, names.arg = numbersteps$date)
+```
+#### 2 - Calculate and report the mean and median total number of steps taken per day
+```{r}
 mean(numbersteps$steps)
 median(numbersteps$steps)
 ```
 
 ## What is the average daily activity pattern?
+#### 1 - Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 ```{r}
 library(ggplot2)
 average <- aggregate(x=list(steps=activity$steps), by=list(interval=activity$interval), FUN=mean, na.rm=TRUE)
 ggplot(data=average, aes(x=interval, y=steps)) + geom_line() + xlab("5-minute interval") + ylab("average number of steps taken")
+```
+#### 2 - Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+```{r}
 average[which.max(average$steps),]
 ```
 
