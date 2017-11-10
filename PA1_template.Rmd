@@ -43,18 +43,30 @@ average[which.max(average$steps),]
 ```
 
 ## Imputing missing values
+#### 1 - Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
 ```{r}
 missing <- is.na(activity$steps)
 sum(missing)
+```
+#### 2 - Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
+```{r}
 activity_fill <- activity
+tapply(activity_fill$steps, activity_fill$interval, mean, na.rm=T, simplify=F )
+```
+#### 3 - Create a new dataset that is equal to the original dataset but with the missing data filled in
+```{r}
 activity_fill$steps[which(is.na(activity_fill$steps))] <- tapply(activity_fill$steps, activity_fill$interval, mean, na.rm=T, simplify=F )
 activity_fill$steps <- as.vector(activity_fill$steps, mode="numeric")
+```
+#### 4 - Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
+```{r}
 library("dplyr")
 daily_activity_fill <- activity_fill %>% group_by(date) %>% summarise( numbersteps = sum(steps, na.rm=T))
 library("ggplot2")
 plot3 <- ggplot(daily_activity_fill, aes(date, numbersteps)) + geom_histogram(stat="identity")+ theme(axis.text.x= element_text(size=6, angle=90, vjust=1))
 print(plot3)
 ```
+##### Both the mean and median are slightly lower when using an imputed mean, instead of NA.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
