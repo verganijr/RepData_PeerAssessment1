@@ -63,6 +63,8 @@ library("ggplot2")
 plot3 <- ggplot(daily_activity_fill, aes(date, numbersteps)) + geom_histogram(stat="identity")+ theme(axis.text.x= element_text(size=6, angle=90, vjust=1))
 print(plot3)
 ```
+
+
 ##### The mean is the same and median is slightly higher when using an imputed mean, instead of NA.
 ```{r}
 numbersteps_fill <- aggregate(steps~date,data=activity_fill,sum,na.rm=FALSE)
