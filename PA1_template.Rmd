@@ -11,7 +11,7 @@ output:
 #### 1 - Load the data (i.e. read.csv())
 ```{r}
 setwd("c:/Data Science/RepData")
-activity <- read.csv(activity.csv)
+activity <- read.csv("activity.csv")
 ```
 #### 2 - Process/transform the data (if necessary) into a format suitable for your analysis
 ```{r}
@@ -49,12 +49,9 @@ missing <- is.na(activity$steps)
 sum(missing)
 ```
 #### 2 - Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
-```{r}
-activity_fill <- activity
-tapply(activity_fill$steps, activity_fill$interval, mean, na.rm=T, simplify=F )
-```
 #### 3 - Create a new dataset that is equal to the original dataset but with the missing data filled in
 ```{r}
+activity_fill <- activity
 activity_fill$steps[which(is.na(activity_fill$steps))] <- tapply(activity_fill$steps, activity_fill$interval, mean, na.rm=T, simplify=F )
 activity_fill$steps <- as.vector(activity_fill$steps, mode="numeric")
 ```
@@ -66,7 +63,31 @@ library("ggplot2")
 plot3 <- ggplot(daily_activity_fill, aes(date, numbersteps)) + geom_histogram(stat="identity")+ theme(axis.text.x= element_text(size=6, angle=90, vjust=1))
 print(plot3)
 ```
-##### Both the mean and median are slightly lower when using an imputed mean, instead of NA.
-
+##### The mean is the same and median is slightly higher when using an imputed mean, instead of NA.
+```{r}
+numbersteps_fill <- aggregate(steps~date,data=activity_fill,sum,na.rm=FALSE)
+mean(numbersteps_fill$steps)
+median(numbersteps_fill$steps)
+```
 ## Are there differences in activity patterns between weekdays and weekends?
-
+#### 1 - Create a new factor variable in the dataset with two levels - “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
+```{r}
+weekday.or.weekend <- function(date) {
+    day <- weekdays(date)
+    if (day %in% c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday"))
+        return("weekday")
+    else if (day %in% c("Saturday", "Sunday"))
+        return("weekend")
+    else
+        stop("invalid date")
+}
+activity_fill$date <- as.Date(activity_fill$date)
+activity_fill$day <- sapply(activity_fill$date, FUN=weekday.or.weekend)
+```
+#### 2 - Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
+```{r}
+averages <- aggregate(steps ~ interval + day, data=activity_fill, mean)
+ggplot(averages, aes(interval, steps)) + geom_line() + facet_grid(day ~ .) +
+    xlab("5-minute interval") + ylab("Number of steps")
+```
+    
