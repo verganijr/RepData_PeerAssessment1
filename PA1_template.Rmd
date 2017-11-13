@@ -33,7 +33,7 @@ median(numbersteps$steps)
 
 ## What is the average daily activity pattern?
 #### 1 - Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
-```{r echo=FALSE}
+```{r}
 library(ggplot2)
 average <- aggregate(x=list(steps=activity$steps), by=list(interval=activity$interval), FUN=mean, na.rm=TRUE)
 ggplot(data=average, aes(x=interval, y=steps)) + geom_line() + xlab("5-minute interval") + ylab("average number of steps taken")
@@ -59,7 +59,7 @@ activity_fill$steps <- as.vector(activity_fill$steps, mode="numeric")
 ```
 
 #### 4 - Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
-```{r echo=FALSE}
+```{r}
 library("dplyr")
 daily_activity_fill <- activity_fill %>% group_by(date) %>% summarise( numbersteps = sum(steps, na.rm=T))
 library("ggplot2")
@@ -89,7 +89,7 @@ activity_fill$date <- as.Date(activity_fill$date)
 activity_fill$day <- sapply(activity_fill$date, FUN=weekday.or.weekend)
 ```
 #### 2 - Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
-```{r echo=FALSE}
+```{r}
 averages <- aggregate(steps ~ interval + day, data=activity_fill, mean)
 ggplot(averages, aes(interval, steps)) + geom_line() + facet_grid(day ~ .) +
     xlab("5-minute interval") + ylab("Number of steps")
